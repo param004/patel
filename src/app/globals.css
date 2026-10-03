@@ -1,26 +1,321 @@
 @import "tailwindcss";
 
+/*
+ * Theme Lock: DARK, chosen once at page level. No section inverts.
+ * Color Lock: one accent (copper) across every section.
+ * Shape Lock: one radius system -- sharp, 2px / 3px only.
+ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /*
+   * Palette pulled from the temple-night renderer's own authored colours so
+   * the interface sits inside the scene instead of on top of it: lantern amber
+   * (renderer uses 0xffa049, 0xff8a26) for the single accent, moonlit
+   * blue-greys (0xb6dbe4, 0x86c6d2, 0x53838f) for the neutral ramp, and the
+   * scene's own #05070a ground.
+   */
+  --bg: #05070a;
+  --bg-raised: #0a0e14;
+  --bg-sunken: #03050a;
+  --fg: #e8edf1;
+  --fg-muted: #93a1ab;
+  /* 5.4:1 on --bg. The previous #5d6b76 was only 3.7:1 and failed AA. */
+  --fg-faint: #7d8994;
+  --line: #151c23;
+  --line-strong: #212b35;
+  --accent: #f0a74a;
+  --accent-dim: #a8742c;
+  --accent-ink: #0a0503;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-bg-raised: var(--bg-raised);
+  --color-bg-sunken: var(--bg-sunken);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-faint: var(--fg-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --color-accent-ink: var(--accent-ink);
+
+  /* Shape Lock: sharp only. No pills, no large radii. */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--bg);
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /*
+   * Deliberately transparent. The scene layer sits at z-index -10, and CSS
+   * paints in-flow block backgrounds *after* negative-z descendants. An opaque
+   * body background therefore paints over the scene and hides it completely,
+   * which looks exactly like a broken renderer. The base colour lives on html
+   * so it still backs the page where nothing else paints.
+   */
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Display type: tight, weight-driven hierarchy rather than raw scale. */
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Copper is used for emphasis, never as a large gradient fill. */
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Reduced motion: collapse every transition and animation site-wide. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Full-viewport scene layer. Defined here rather than in threeui.css because
+ * that file only ships the .temple-night-* rules.
+ */
+.shader-frame {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  background: var(--bg-sunken);
+}
+
+/*
+ * Kage landing page route.
+ *
+ * The configured usage wraps <KageLandingPage /> in .shader-frame, which above
+ * is the fixed z-index -10 layer built for the scene-only temple renderer.
+ * KageLandingPage is the opposite shape: with no backgroundCanvasSelector it
+ * renders the complete authored document, so it needs a scrollable in-flow box
+ * with its own stacking context rather than a fixed one behind the page. These
+ * rules restore that box for this route only and leave the homepage scene
+ * untouched.
+ *
+ * The iframe owns scrolling, so the shell clips and the frame is exactly one
+ * viewport tall.
+ */
+.kage-shell {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  height: 100svh;
+  background: #080808;
+}
+
+.kage-shell .shader-frame {
+  position: relative;
+  inset: auto;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  background: #080808;
+}
+
+.kage-shell .shader-frame > .landing-page-frame,
+.kage-shell .shader-frame .landing-page-frame {
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * The way back to the portfolio from the Kage homepage. App-side chrome sitting
+ * above the iframe rather than inside the authored document, which is
+ * hash-verified.
+ *
+ * Top-right is the only placement that stays clear of authored text at 1440,
+ * 1280 and 390 wide. The hero chapter numeral sits under bottom-left, and the
+ * bottom-centre and bottom-right hero CTAs collide on narrow screens.
+ */
+.kage-portfolio-link {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.9rem;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 2px;
+  background: rgb(8 8 8 / 0.55);
+  backdrop-filter: blur(6px);
+  color: rgb(255 255 255 / 0.62);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.kage-portfolio-link:hover,
+.kage-portfolio-link:focus-visible {
+  border-color: #e0231c;
+  background: rgb(8 8 8 / 0.78);
+  color: #fff;
+}
+
+.shader-frame .temple-night-scene {
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Scrims over the scene. The renderer places bright lanterns and a moon in
+ * frame, so type needs a guaranteed contrast floor rather than trusting the
+ * render to stay dark where the copy happens to sit.
+ */
+.scene-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: -9;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to bottom,
+      rgb(3 5 10 / 0.82) 0%,
+      rgb(3 5 10 / 0.42) 22%,
+      rgb(3 5 10 / 0.3) 55%,
+      rgb(3 5 10 / 0.86) 100%
+    ),
+    linear-gradient(to right, rgb(3 5 10 / 0.78) 0%, transparent 62%);
+}
+
+/*
+ * Panels that must stay readable over the render. Opaque rather than
+ * translucent, because backdrop-filter cannot be relied on to keep 4.5:1.
+ */
+.scene-panel {
+  background: rgb(5 7 10 / 0.9);
+  border: 1px solid var(--line);
+}
+
+/*
+ * Reading surfaces for the prose sections. Near-opaque rather than fully
+ * opaque: the scene keeps ghosting through so it reads as a page background,
+ * while the 0.94 floor keeps body copy well clear of 4.5:1 over whatever the
+ * renderer happens to be showing.
+ */
+.scene-section {
+  background: rgb(5 7 10 / 0.94);
+}
+
+.scene-section-alt {
+  background: rgb(10 14 20 / 0.93);
+}
+
+/* Fine surface grain. Masks the banding that large dark gradients produce. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Shared measure for body copy. */
+.measure {
+  max-width: 65ch;
+}
+
+.portfolio-page {
+  background: #080808;
+}
+
+.portfolio-hero {
+  background:
+    radial-gradient(circle at 20% 12%, rgb(255 135 54 / 0.22), transparent 28%),
+    linear-gradient(112deg, #f0541a 0%, #d92c13 55%, #bb100e 100%);
+}
+
+.portfolio-hero__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(0 0 0 / 0.02), transparent 55%, rgb(101 0 0 / 0.12)),
+    linear-gradient(to bottom, transparent 48%, rgb(8 8 8 / 0.2) 68%, #080808 100%);
+  pointer-events: none;
+}
+
+.portfolio-portrait {
+  mask-image: linear-gradient(to bottom, black 76%, transparent 99%);
+  -webkit-mask-image: linear-gradient(to bottom, black 76%, transparent 99%);
+  mix-blend-mode: screen;
+  filter: grayscale(1) contrast(1.18) brightness(1.12);
+}
+
+.portfolio-portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgb(196 18 14 / 0.1), transparent 55%, #080808 98%);
+  mix-blend-mode: color;
+}
+
+.portfolio-work {
+  background:
+    radial-gradient(ellipse 75% 22% at 50% 0%, rgb(245 73 22 / 0.95) 0%, transparent 72%),
+    linear-gradient(to bottom, #c71810 0%, #8d0f0d 35%, #080808 100%);
+}
+
+.portfolio-work::before {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: -8vw;
+  height: 12vw;
+  min-height: 72px;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: #080808;
+  opacity: 0.55;
+  transform: translateY(-50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-portrait {
+    filter: grayscale(1) contrast(1.12);
+  }
 }

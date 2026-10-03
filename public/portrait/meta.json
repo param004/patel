@@ -1,0 +1,16 @@
+{
+  "count": 65740,
+  "source": "param.jpg",
+  "depthResolution": [
+    1600,
+    716
+  ],
+  "subjectBox": [
+    0,
+    0,
+    1600,
+    716
+  ],
+  "zScale": 0.55,
+  "bytes": 394504
+}
