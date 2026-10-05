@@ -48,7 +48,7 @@ body{
 
 </style>
 
-<div id="bg"><h1>ノクターン</h1></div>
+<div id="bg"><h1>Nocturne</h1></div>
 
 <div id="dof"></div>
 <canvas id="gl"></canvas>
@@ -186,9 +186,9 @@ function drawJapanese(ctx){
   ctx.strokeStyle='rgba(198,163,92,.26)'; ctx.lineWidth=0.9;
   ctx.strokeRect(78,78,TW-156,TH-156);
 
-  // 認定証 running down the right-hand column
+  // Zertifikat running down the right-hand column
   ctx.fillStyle=GOLD; ctx.font='600 104px '+JP;
-  ['認','定','証'].forEach((c,i)=> ctx.fillText(c, 966, 268+i*128));
+  ['Z','ert','ifikat'].forEach((c,i)=> ctx.fillText(c, 966, 268+i*128));
   ctx.strokeStyle='rgba(198,163,92,.42)'; ctx.lineWidth=1.2;
   ctx.beginPath(); ctx.moveTo(1018,700); ctx.lineTo(1018,1010); ctx.stroke();
 
@@ -197,27 +197,27 @@ function drawJapanese(ctx){
     ctx.fillStyle='rgba(198,163,92,.58)'; ctx.font='500 18px Inter, sans-serif';
     track(ctx,rom,140,y+40,6,false);
   };
-  pair('年間最優秀賞','BEST OF THE YEAR',330,74);
-  pair('ノクターン・スタジオ','NOCTURNE STUDIO',540,56);
-  pair('二〇二六年二月十四日','14 FEBRUARY 2026',720,44);
-  pair('オービット賞 授与','CONFERRED BY ORBIT AWARDS',880,40);
+  pair('Auszeichnung des Jahres','BEST OF THE YEAR',330,74);
+  pair('Nocturne Studio','NOCTURNE STUDIO',540,56);
+  pair('14. Februar 2026','14 FEBRUARY 2026',720,44);
+  pair('Verliehen von den Orbit Awards','CONFERRED BY ORBIT AWARDS',880,40);
 
   ctx.fillStyle='rgba(230,224,210,.52)'; ctx.font='400 24px '+JP;
-  ctx.fillText('右の者 その仕事の質を認め', 140, 1010);
-  ctx.fillText('ここに年間最優秀賞を贈る。', 140, 1050);
+  ctx.fillText('In Anerkennung der Qualität dieser Arbeit', 140, 1010);
+  ctx.fillText('Hiermit wird die Auszeichnung des Jahres verliehen.', 140, 1050);
 
   // hanko
   ctx.save(); ctx.translate(178,1268);
   ctx.strokeStyle=VERM; ctx.lineWidth=8;
   rr(ctx,-72,-72,144,144,12); ctx.stroke();
   ctx.fillStyle=VERM; ctx.font='600 54px '+JP;
-  ctx.fillText('認',-27,-10); ctx.fillText('定',-27,50);
+  ctx.fillText('Z',-27,-10); ctx.fillText('ert',-27,50);
   ctx.restore();
 
   ctx.fillStyle='rgba(198,163,92,.70)'; ctx.font='500 17px Inter, sans-serif';
   track(ctx,'ORBIT AWARDS · KYOTO',300,1252,6,false);
   ctx.fillStyle='rgba(230,224,210,.40)'; ctx.font='400 22px '+JP;
-  ctx.fillText('京都 · オービット賞審査会',300,1296);
+  ctx.fillText('Jury der Orbit Awards · Kyoto',300,1296);
   signature(ctx,306,1360,1.35,17,'rgba(198,163,92,.62)',2.2);
 
   ctx.strokeStyle='rgba(198,163,92,.30)'; ctx.lineWidth=1;

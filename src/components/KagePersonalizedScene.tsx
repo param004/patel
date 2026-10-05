@@ -21,7 +21,7 @@ import "@/shaders/threeui.css";
  *   sourceUrl  /landing-pages/kage.html
  *           -> /landing-pages/kage.portfolio.html
  *   title      "Kage - Where stillness reveals the unseen"
- *           -> "Param Pambhar - Full-stack developer"
+ *           -> "Param Pambhar - Full-Stack-Entwickler"
  *
  * `KageLandingPage` itself is never edited: it is part of the registered
  * source bundle and is covered by its published SHA-256. The registered
@@ -54,7 +54,7 @@ export function Scene() {
       <LandingPageFrame
         {...frame}
         customization={customization}
-        title="Param Pambhar - Full-stack developer"
+        title="Param Pambhar - Full-Stack-Entwickler"
         sourceUrl="/landing-pages/kage.portfolio.html"
       />
     </div>

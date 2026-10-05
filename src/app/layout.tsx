@@ -18,23 +18,23 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://param004.github.io"),
   title: {
-    default: "Param Pambhar, full-stack developer building 3D product experiences",
+  default: "Param Pambhar, Full-Stack-Entwickler für 3D-Produkterlebnisse",
     template: "%s, Param Pambhar",
   },
   description:
-    "Full-stack developer working across React, Node and real-time 3D in the browser. Five shipped projects, from a Redux Q&A client to an interactive WebGL product viewer.",
+    "Full-Stack-Entwickler mit React, Node und Echtzeit-3D im Browser. Fünf veröffentlichte Projekte, vom Redux-Fragenportal bis zum interaktiven WebGL-Produktviewer.",
   openGraph: {
     type: "website",
     title: "Param Pambhar",
     description:
-      "Full-stack developer building 3D product experiences with React, Node and WebGL.",
+      "Full-Stack-Entwickler für 3D-Produkterlebnisse mit React, Node und WebGL.",
     siteName: "Param Pambhar",
   },
   twitter: {
     card: "summary_large_image",
     title: "Param Pambhar",
     description:
-      "Full-stack developer building 3D product experiences with React, Node and WebGL.",
+      "Full-Stack-Entwickler für 3D-Produkterlebnisse mit React, Node und WebGL.",
   },
   robots: { index: true, follow: true },
 };
@@ -47,7 +47,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang="en"
+      lang="de"
       className={`${archivo.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col grain bg-bg text-fg">
